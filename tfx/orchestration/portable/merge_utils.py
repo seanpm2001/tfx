@@ -14,11 +14,12 @@
 """Portable library for merging data during pipeline orchestration."""
 import copy
 import os
-from typing import Mapping, Optional, Sequence
-
+from typing import Mapping, Optional
 from absl import logging
+
 from tfx import types
 from tfx.orchestration.portable import outputs_utils
+from tfx.proto.orchestration import execution_result_pb2
 from tfx.utils import typing_utils
 
 from ml_metadata.proto import metadata_store_pb2
@@ -97,7 +98,7 @@ def _validate_updated_artifact(updated_artifact: metadata_store_pb2.Artifact,
 def merge_updated_output_artifacts(
     original_output_artifacts: Optional[typing_utils.ArtifactMultiMap] = None,
     updated_output_artifacts: Optional[Mapping[
-        str, Sequence[metadata_store_pb2.Artifact]]] = None
+        str, execution_result_pb2.ExecutorOutput.ArtifactList]] = None
 ) -> typing_utils.ArtifactMultiMap:
   """Merges the updated output artifacts returned by a pipeline node.
 
@@ -156,7 +157,7 @@ def merge_updated_output_artifacts(
         original_artifact_list.extend(filtered_artifacts)
         continue
 
-      updated_artifact_list = updated_output_artifacts[key]
+      updated_artifact_list = updated_output_artifacts[key].artifacts
 
       # We assume the original output dict must include at least one output
       # artifact and all artifacts in the list share the same type/properties.

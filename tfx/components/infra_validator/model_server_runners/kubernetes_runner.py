@@ -94,8 +94,8 @@ def _convert_to_resource_requirements(
     resources: infra_validator_pb2.Resources
 ) -> k8s_client.V1ResourceRequirements:
   return k8s_client.V1ResourceRequirements(
-      requests=dict(resources.requests),
-      limits=dict(resources.limits),
+      requests=resources.requests,
+      limits=resources.limits,
   )
 
 
